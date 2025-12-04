@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const Header = () => {
     return (
@@ -28,16 +29,16 @@ const Header = () => {
 
                     {/* Navigation Links */}
                     <div className="hidden md:flex items-center gap-8">
+                        <a href="/" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
                         <a href="/features" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Features</a>
-                        <a href="/solutions" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Solutions</a>
                         <a href="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm font-medium">Pricing</a>
                     </div>
 
                     {/* Buttons */}
                     <div className="hidden md:flex items-center gap-3">
-                        <button className="text-slate-300 hover:text-white transition-colors text-sm font-medium px-4 py-2">
+                        <Link href="/login" className="text-slate-300 hover:text-white transition-colors text-sm font-medium px-4 py-2">
                             Sign In
-                        </button>
+                        </Link>
                         <button className="bg-linear-to-r from-purple-600 to-pink-600 text-white px-5 py-2 rounded text-sm font-medium hover:from-purple-700 hover:to-pink-700 transition-all">
                             Get Started
                         </button>

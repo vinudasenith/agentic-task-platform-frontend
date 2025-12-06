@@ -1,8 +1,54 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function Login() {
+
+    // State
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    //handle login
+    const handleLogin = async () => {
+        setLoading(true);
+
+        // Validation
+        if (!email || !password) {
+            toast.error("Please enter email and password");
+            setLoading(false);
+            return;
+        }
+
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+
+            const res = await fetch("http://localhost:7000/api/users/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success("User logged in successfully");
+                setTimeout(() => { window.location.href = "/" }, 2000);
+            } else {
+                toast.error(data.message || "Login failed! Please try again.");
+            }
+        } catch (error) {
+            toast.error("Something went wrong! Please try again.");
+        }
+
+        setLoading(false);
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-8">
+
             {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -top-40 -right-40 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -54,6 +100,8 @@ export default function Login() {
                         </label>
                         <input
                             type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                             placeholder="you@example.com"
                         />
@@ -70,6 +118,8 @@ export default function Login() {
                         </div>
                         <input
                             type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                             placeholder="••••••••"
                         />
@@ -85,8 +135,11 @@ export default function Login() {
                         </label>
                     </div>
 
-                    <button className="w-full bg-linear-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-lg hover:shadow-purple-500/50 transform hover:scale-[1.02] active:scale-[0.98]">
-                        Sign In
+                    <button
+                        onClick={handleLogin}
+                        disabled={loading}
+                        className="w-full bg-linear-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-lg hover:shadow-purple-500/50 transform hover:scale-[1.02] active:scale-[0.98]">
+                        {loading ? "Signing in..." : "Sign In"}
                     </button>
                 </div>
 

@@ -1,6 +1,52 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+
 
 export default function Register() {
+
+    // State
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [loading, setLoading] = useState(false);
+
+    //handle register
+    const handleRegister = async () => {
+        setLoading(true);
+
+        try {
+            const res = await fetch("http://localhost:7000/api/users/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                toast.success("User registered successfully");
+                setName('');
+                setEmail('');
+                setPassword('');
+                setTimeout(() => { window.location.href = "/login" }, 2000);
+            } else {
+                toast.error(data.message || "Registration failed! Please try again.");
+            }
+
+
+        } catch (error) {
+            toast.error("Something went wrong! Please try again.");
+        }
+
+        setLoading(false);
+    }
+
+
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden py-8">
             {/* Animated background elements */}
@@ -56,6 +102,8 @@ export default function Register() {
                         </label>
                         <input
                             type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                             placeholder="Your Name"
                         />
@@ -68,6 +116,8 @@ export default function Register() {
                         </label>
                         <input
                             type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                             placeholder="you@example.com"
                         />
@@ -80,14 +130,18 @@ export default function Register() {
                         </label>
                         <input
                             type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
                             placeholder="••••••••"
                         />
                     </div>
 
                     {/* Submit Button */}
-                    <button className="w-full bg-linear-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-lg hover:shadow-purple-500/50 transform hover:scale-[1.02] active:scale-[0.98]">
-                        Register
+                    <button
+                        onClick={handleRegister}
+                        disabled={loading} className="w-full bg-linear-to-r from-purple-600 to-pink-600 text-white py-2.5 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition shadow-lg hover:shadow-purple-500/50 transform hover:scale-[1.02] active:scale-[0.98]">
+                        {loading ? "Creating..." : "Register"}
                     </button>
                 </div>
 

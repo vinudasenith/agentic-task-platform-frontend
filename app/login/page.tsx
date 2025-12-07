@@ -35,6 +35,10 @@ export default function Login() {
 
             if (res.ok) {
                 toast.success("User logged in successfully");
+
+                localStorage.setItem('token', data.token);
+                localStorage.setItem("user", JSON.stringify(data.user));
+
                 setTimeout(() => { window.location.href = "/" }, 2000);
             } else {
                 toast.error(data.message || "Login failed! Please try again.");
